@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Eipsi — Wellness Companion</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=Lora:ital,wght@0,400;1,400&display=swap');
+    *{box-sizing:border-box;margin:0;padding:0;}
+    :root{
+      --bg:#0c0f0e;--surface:#141918;--surface2:#1c2220;
+      --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.11);
+      --text:#eef1ee;--text2:#7a9186;--text3:#4a5e58;
+      --accent:#4db882;--accent2:#6dd49a;
+      --user-bubble:#163026;--ai-bubble:#161c1a;
+      --radius:18px;--radius-sm:12px;
+    }
+    body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);}
+    .app{display:flex;flex-direction:column;height:100dvh;max-width:480px;margin:0 auto;}
+    .header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 12px;border-bottom:0.5px solid var(--border);}
+    .header-left{display:flex;align-items:center;gap:10px;}
+    .hav{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#1a5c38,#4db882);display:flex;align-items:center;justify-content:center;position:relative;}
+    .hav i{font-size:17px;color:#fff;}
+    .hdot{width:8px;height:8px;border-radius:50%;background:#4ade80;position:absolute;bottom:0;right:0;border:2px solid var(--bg);}
+    .htitle{font-size:15px;font-weight:500;color:var(--text);}
+    .hsub{font-size:11px;color:var(--text2);margin-top:1px;}
+    .icon-btn{width:34px;height:34px;border-radius:50%;border:0.5px solid var(--border2);background:var(--surface);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+    .icon-btn i{font-size:16px;color:var(--text2);}
+    .messages{flex:1;overflow-y:auto;padding:16px 14px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth;}
+    .messages::-webkit-scrollbar{width:3px;}
+    .messages::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+    .welcome{display:flex;flex-direction:column;align-items:center;gap:14px;padding:20px 16px 8px;text-align:center;}
+    .wicon{width:64px;height:64px;border-radius:22px;background:linear-gradient(135deg,#0f3320,#1a5c38);border:0.5px solid rgba(77,184,130,0.25);display:flex;align-items:center;justify-content:center;}
+    .wicon i{font-size:30px;color:var(--accent2);}
+    .welcome h2{font-size:18px;font-weight:400;color:var(--text);font-family:'Lora',serif;}
+    .welcome p{font-size:12.5px;color:var(--text2);line-height:1.7;max-width:280px;}
+    .mood-row{display:flex;gap:8px;justify-content:center;margin-top:2px;}
+    .mood{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 12px;border-radius:var(--radius-sm);border:0.5px solid var(--border2);background:var(--surface);cursor:pointer;transition:all 0.15s;min-width:58px;}
+    .mood:hover{background:var(--surface2);border-color:rgba(77,184,130,0.35);}
+    .mood span{font-size:20px;}
+    .mood label{font-size:10px;color:var(--text3);cursor:pointer;}
+    .section-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.6px;align-self:flex-start;padding-left:2px;margin-top:4px;}
+    .chips{display:flex;flex-direction:column;gap:6px;width:100%;}
+    .chip{padding:10px 13px;border-radius:var(--radius-sm);border:0.5px solid var(--border2);background:var(--surface);font-size:12px;color:var(--text2);text-align:left;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.15s;font-family:'DM Sans',sans-serif;}
+    .chip:hover{background:var(--surface2);color:var(--text);border-color:rgba(77,184,130,0.35);}
+    .chip i{font-size:14px;color:var(--accent);}
+    .msg-row{display:flex;gap:8px;animation:fadeUp 0.2s ease;}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+    .msg-row.user{flex-direction:row-reverse;}
+    .mavatar{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;margin-top:2px;}
+    .msg-row.ai .mavatar{background:linear-gradient(135deg,#1a5c38,#4db882);color:#fff;}
+    .msg-row.user .mavatar{background:var(--surface2);color:var(--text2);border:0.5px solid var(--border2);}
+    .bwrap{display:flex;flex-direction:column;max-width:80%;}
+    .msg-row.user .bwrap{align-items:flex-end;}
+    .bubble{padding:10px 13px;border-radius:var(--radius);font-size:13px;line-height:1.65;}
+    .msg-row.ai .bubble{background:var(--ai-bubble);color:var(--text);border:0.5px solid var(--border2);border-bottom-left-radius:5px;}
+    .msg-row.user .bubble{background:var(--user-bubble);color:#a8d8bc;border:0.5px solid rgba(77,184,130,0.2);border-bottom-right-radius:5px;}
+    .mtime{font-size:10px;color:var(--text3);margin-top:4px;padding:0 4px;}
+    .bubble p{margin:3px 0;}.bubble ul,.bubble ol{margin:6px 0 6px 16px;}.bubble li{margin:3px 0;}
+    .bubble strong{color:var(--accent2);font-weight:500;}
+    .typing-row{display:flex;gap:8px;align-items:center;}
+    .tdots{display:flex;gap:4px;padding:10px 14px;background:var(--ai-bubble);border-radius:var(--radius);border:0.5px solid var(--border2);border-bottom-left-radius:5px;}
+    .tdots span{width:6px;height:6px;border-radius:50%;background:var(--accent);opacity:0.4;animation:dot 1.2s infinite;}
+    .tdots span:nth-child(2){animation-delay:0.2s;}.tdots span:nth-child(3){animation-delay:0.4s;}
+    @keyframes dot{0%,80%,100%{transform:translateY(0);opacity:0.4}40%{transform:translateY(-4px);opacity:1}}
+    .input-area{padding:10px 14px 20px;border-top:0.5px solid var(--border);}
+    .err{background:rgba(234,78,78,0.1);border:0.5px solid rgba(234,78,78,0.25);border-radius:var(--radius-sm);padding:7px 12px;font-size:12px;color:#f87171;margin-bottom:8px;display:none;}
+    .input-row{display:flex;align-items:flex-end;gap:8px;}
+    .ibox{flex:1;background:var(--surface);border:0.5px solid var(--border2);border-radius:22px;padding:10px 14px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;resize:none;max-height:100px;min-height:42px;outline:none;line-height:1.5;transition:border-color 0.15s;overflow-y:auto;}
+    .ibox:focus{border-color:rgba(77,184,130,0.45);}.ibox::placeholder{color:var(--text3);}
+    .sbtn{width:40px;height:40px;border-radius:50%;background:var(--accent);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all 0.15s;}
+    .sbtn:hover{background:var(--accent2);transform:scale(1.05);}.sbtn:disabled{background:var(--surface2);cursor:not-allowed;transform:none;}
+    .sbtn i{font-size:16px;color:#fff;}
+    .clrbtn{font-size:11px;color:var(--text3);background:none;border:none;cursor:pointer;padding:4px 0 0;text-align:right;width:100%;font-family:'DM Sans',sans-serif;display:none;}
+    .clrbtn:hover{color:var(--text2);}
+  </style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="header-left">
+      <div class="hav"><i class="ti ti-leaf"></i><div class="hdot"></div></div>
+      <div><div class="htitle">Eipsi</div><div class="hsub">Your wellness companion (made by chakma)</div></div>
+    </div>
+    <div class="icon-btn" onclick="clearChat()" title="Start fresh"><i class="ti ti-refresh"></i></div>
+  </div>
+
+  <div class="messages" id="messages">
+    <div class="welcome" id="welcome">
+      <div class="wicon"><i class="ti ti-heart-handshake"></i></div>
+      <h2>How are you feeling today?</h2>
+      <p>I'm here to support your growth, relationships, mental clarity, and health — one conversation at a time.</p>
+      <div class="mood-row">
+        <div class="mood" onclick="sendMood('I am feeling great today 😊')"><span>😊</span><label>Great</label></div>
+        <div class="mood" onclick="sendMood('I am feeling okay, just neutral today 😐')"><span>😐</span><label>Okay</label></div>
+        <div class="mood" onclick="sendMood('I am feeling a bit low today 😔')"><span>😔</span><label>Low</label></div>
+        <div class="mood" onclick="sendMood('I am feeling stressed or overwhelmed 😰')"><span>😰</span><label>Stressed</label></div>
+      </div>
+      <div class="section-label">Or explore a topic</div>
+      <div class="chips">
+        <button class="chip" onclick="sendSuggestion(this)"><i class="ti ti-brain"></i> Help me clear my mind and find focus</button>
+        <button class="chip" onclick="sendSuggestion(this)"><i class="ti ti-users"></i> I need relationship advice</button>
+        <button class="chip" onclick="sendSuggestion(this)"><i class="ti ti-trending-up"></i> Guide me on personal growth</button>
+        <button class="chip" onclick="sendSuggestion(this)"><i class="ti ti-heart-rate-monitor"></i> Check in on my health habits</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="input-area">
+    <div class="err" id="err"></div>
+    <div class="input-row">
+      <textarea class="ibox" id="input" placeholder="Share what's on your mind…" rows="1"
+                onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <button class="sbtn" id="sbtn" onclick="sendMessage()" aria-label="Send"><i class="ti ti-arrow-up"></i></button>
+    </div>
+    <button class="clrbtn" id="clrbtn" onclick="clearChat()">Start fresh</button>
+  </div>
+</div>
+
+<script>
+  // 🟩 API SETTINGS
+  const API_KEY = "AIzaSyD-wUJiMMBHkQ10WpkPNQitle5kx3y3F-E";
+  const MODEL_NAME = "gemini-2.5-flash"; // Fully unrestricted cardless free tier endpoint
+
+  const SYSTEM_PROMPT = "You are Eipsi, a warm, empathetic, and insightful wellness companion. Help with self-help and personal growth, relationship advice, mental and emotional wellbeing, and health habits. Your tone is calm, caring, non-judgmental, and grounding. Always validate feelings before offering advice. Keep responses warm and conversational, not clinical. Shorter response, humor, modern conversational tone, mindfulness, peace, philosophy, emotional balance, communication advice, confidence, attachment understanding, empathy, use short paragraphs, use bullet points for clarity,avoid long walls of text unless requested, summarize key takeaways at the end when useful, create engaging conversation that user enjoy returning to, medicines, pharmacy, general knowledge, expert at all language in the world, creativity, decision making, speak like a smart human, helpful for relationship, health issues.";
+
+  let history = [], isLoading = false;
+
+  function getTime(){return new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});}
+  function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px';}
+  function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}}
+  function sendSuggestion(btn){document.getElementById('input').value=btn.innerText.trim();sendMessage();}
+  function sendMood(text){document.getElementById('input').value=text;sendMessage();}
+  function hideWelcome(){const w=document.getElementById('welcome');if(w)w.remove();document.getElementById('clrbtn').style.display='block';}
+  function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function formatText(t){
+    let o=t
+      .replace(/```[\s\S]*?```/g,m=>`<pre>${escHtml(m.slice(3,-3).replace(/^\w+\n/,'').trim())}</pre>`)
+      .replace(/`([^`]+)`/g,'<code>$1</code>')
+      .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g,'<em>$1</em>')
+      .replace(/^[-•]\s+(.+)$/gm,'<li>$1</li>')
+      .replace(/(<li>.*<\/li>\n?)+/g,m=>`<ul>${m}</ul>`)
+      .replace(/\n\n+/g,'</p><p>').replace(/\n/g,'<br>');
+    return `<p>${o}</p>`;
+  }
+  function appendMessage(role,text){
+    hideWelcome();
+    const msgs=document.getElementById('messages');
+    const row=document.createElement('div');
+    row.className=`msg-row ${role}`;
+    const icon=role==='ai'?'<i class="ti ti-leaf" style="font-size:13px"></i>':'U';
+    row.innerHTML=`<div class="mavatar">${icon}</div><div class="bwrap"><div class="bubble">${formatText(text)}</div><div class="mtime">${getTime()}</div></div>`;
+    msgs.appendChild(row);msgs.scrollTop=msgs.scrollHeight;
+  }
+  function showTyping(){
+    const msgs=document.getElementById('messages');
+    const row=document.createElement('div');row.className='typing-row';row.id='typing';
+    row.innerHTML=`<div class="mavatar" style="background:linear-gradient(135deg,#1a5c38,#4db882);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px"><i class="ti ti-leaf" style="font-size:13px"></i></div><div class="tdots"><span></span><span></span><span></span></div>`;
+    msgs.appendChild(row);msgs.scrollTop=msgs.scrollHeight;
+  }
+  function hideTyping(){const t=document.getElementById('typing');if(t)t.remove();}
+  function showError(msg){const b=document.getElementById('err');b.textContent=msg;b.style.display='block';setTimeout(()=>b.style.display='none',5000);}
+
+  // 🚀 SINGLE CORRECTED SEND FUNCTION
+  async function sendMessage(){
+    if(isLoading)return;
+    const input=document.getElementById('input');
+    const text=input.value.trim();if(!text)return;
+    input.value='';input.style.height='auto';
+    isLoading=true;document.getElementById('sbtn').disabled=true;
+    appendMessage('user',text);
+
+    history.push({role:'user',parts:[{text:text}]});
+    showTyping();
+
+    try{
+      // Properly structure request with system instruction rules mapped inside the context
+      const formattedContents = [
+        {role:'user', parts:[{text: SYSTEM_PROMPT + "\n\nUser: " + history[0].parts[0].text}]},
+        ...history.slice(1)
+      ];
+
+      const res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${API_KEY}`,
+        {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({contents: formattedContents})
+        }
+      );
+
+      hideTyping();
+      if(!res.ok){
+        const e=await res.json().catch(()=>({}));
+        throw new Error(e.error?.message||`Error ${res.status}`);
+      }
+      const data=await res.json();
+      const reply=data.candidates[0].content.parts[0].text;
+      history.push({role:'model',parts:[{text:reply}]});
+      appendMessage('ai',reply);
+    }catch(err){
+      hideTyping();
+      showError('Something went wrong: '+err.message);
+      history.pop();
+    }
+    isLoading=false;document.getElementById('sbtn').disabled=false;input.focus();
+  }
+
+  function clearChat(){
+    history=[];
+    document.getElementById('messages').innerHTML=`<div class="welcome" id="welcome"><div class="wicon"><i class="ti ti-heart-handshake"></i></div><h2>How are you feeling today?</h2><p>I'm here to support your growth, relationships, mental clarity, and health — one conversation at a time.</p><div class="mood-row"><div class="mood" onclick="sendMood('I am feeling great today 😊')"><span>😊</span><label>Great</label></div><div class="mood" onclick="sendMood('I am feeling okay, just neutral today 😐')"><span>😐</span><label>Okay</label></div><div class="mood" onclick="sendMood('I am feeling a bit low today 😔')"><span>😔</span><label>Low</label></div><div class="mood" onclick="sendMood('I am feeling stressed or overwhelmed 😰')"><span>😰</span><label>Stressed</label></div></div><div class="section-label">Or explore a topic</div><div class="chips"><button class="chip" onclick="sendSuggestion(this)"><i class="ti ti-brain"></i> Help me clear my mind and find focus</button><button class="chip" onclick="sendSuggestion(this)"><i class="ti ti-users"></i> I need relationship advice</button><button class="chip" onclick="sendSuggestion(this)"><i class="ti ti-trending-up"></i> Guide me on personal growth</button><button class="chip" onclick="sendSuggestion(this)"><i class="ti ti-heart-rate-monitor"></i> Check in on my health habits</button></div></div>`;
+    document.getElementById('clrbtn').style.display='none';
+  }
+</script>
+</body>
+</html>
