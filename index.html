@@ -120,10 +120,8 @@
 
 <script>
   // 🟩 API SETTINGS
-  const CRISIS = /(hopeless|don'?t want to live|want to die|kill myself|suicid|end my life|hurt myself|harm myself|better off without me|no reason to live)/i;
-const CRISIS_NOTE = "If you are in danger or thinking of hurting yourself, please contact someone now.\n\n**Emergency (Bangladesh): 999**\n**Kaan Pete Roi helpline: 09612-119911** (every day, 3 pm to 3 am)\n\nYou can also tell a person you trust.";
-function addSafety(userText, reply){ return CRISIS.test(userText) ? reply + "\n\n" + CRISIS_NOTE : reply; }
-
+  
+const CRISIS = /(hopeless|don['’]?t want to live|want to die|kill(ing)? myself|suicid|end my life|hurt(ing)? myself|harm(ing)? myself|better off without me|no reason to live)/i;
   const SYSTEM_PROMPT = "You are Eipsi, a warm, empathetic, and insightful wellness companion. Help with self-help and personal growth, relationship advice, mental and emotional wellbeing, and health habits. Your tone is calm, caring, non-judgmental, and grounding. Always validate feelings before offering advice. Keep responses warm and conversational, not clinical. Shorter response, humor, modern conversational tone, mindfulness, peace, philosophy, emotional balance, communication advice, confidence, attachment understanding, empathy, use short paragraphs, use bullet points for clarity,avoid long walls of text unless requested, summarize key takeaways at the end when useful, create engaging conversation that user enjoy returning to, medicines, pharmacy, general knowledge, expert at all language in the world, creativity, decision making, speak like a smart human, helpful for relationship, health issues.";
 
   let history = [], isLoading = false;
